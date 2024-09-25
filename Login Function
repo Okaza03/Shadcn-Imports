@@ -35,13 +35,13 @@
     },
     {
       "path": "./lib/appwrite.ts",
-      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || 'https://cloud.appwrite.io/v1')\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || '66db2f770020f6ed7d61');\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT) // Use env variable\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID); // Use env variable\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
       "type": "registry:example",
       "target": "./lib/appwrite.ts"
     },
     {
       "path": "./.env.local",
-      "content": "NEXT_PUBLIC_APPWRITE_PROJECT_ID=\"66db2f770020f6ed7d61\"\nNEXT_PUBLIC_APPWRITE_ENDPOINT=\"https://cloud.appwrite.io/v1\"\n",
+      "content": "NEXT_PUBLIC_APPWRITE_PROJECT_ID=\"\"\nNEXT_PUBLIC_APPWRITE_ENDPOINT=\"https://cloud.appwrite.io/v1\"\n",
       "type": "registry:example",
       "target": "./.env.local"
     }
