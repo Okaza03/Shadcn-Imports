@@ -1,0 +1,42 @@
+{
+  "name": "next-app-with-login-account-middleware",
+  "type": "registry:block",
+  "dependencies": [
+    "@appwrite/sdk",
+    "react-hook-form",
+    "tailwindcss",
+    "next-auth",
+    "next/router"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [],
+  "files": [
+    {
+      "path": "./app/(app)/login/page.tsx",
+      "content": "import { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/router';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n  \n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <input {...register('email')} type=\"email\" placeholder=\"Email\" className=\"border p-2\" />\n        <input {...register('password')} type=\"password\" placeholder=\"Password\" className=\"border p-2\" />\n        <button type=\"submit\" className=\"bg-blue-500 text-white p-2 rounded\">Login</button>\n      </form>\n    </div>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./app/(app)/login/page.tsx"
+    },
+    {
+      "path": "./app/(app)/account/page.tsx",
+      "content": "import { useRouter } from 'next/router';\nimport { account } from '@/lib/appwrite';\nimport { useEffect, useState } from 'react';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n    </div>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./app/(app)/account/page.tsx"
+    },
+    {
+      "path": "./app/(app)/middleware.ts",
+      "content": "import { NextResponse } from 'next/server';\nimport { account } from '@/lib/appwrite';\n\nexport async function middleware(req) {\n  try {\n    await account.get();\n    return NextResponse.next();\n  } catch (err) {\n    return NextResponse.redirect(new URL('/app/(app)/login', req.url));\n  }\n}\n\nexport const config = {\n  matcher: ['/app/(app)/account/:path*'],\n};\n",
+      "type": "registry:example",
+      "target": "./app/(app)/middleware.ts"
+    },
+    {
+      "path": "./lib/appwrite.ts",
+      "content": "import { Client, Account } from '@appwrite/sdk';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "type": "registry:example",
+      "target": "./lib/appwrite.ts"
+    }
+  ],
+  "tailwind": {},
+  "cssVars": {},
+  "meta": {}
+}
