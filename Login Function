@@ -36,7 +36,7 @@
     },
     {
       "path": "./lib/appwrite.ts",
-      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID);\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT || \"\")\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID || \"\");\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
       "type": "registry:example",
       "target": "./lib/appwrite.ts"
     },
@@ -45,6 +45,12 @@
       "content": "NEXT_PUBLIC_APPWRITE_PROJECT_ID=\"\"\nNEXT_PUBLIC_APPWRITE_ENDPOINT=\"https://cloud.appwrite.io/v1\"\n",
       "type": "registry:example",
       "target": "./.env.local"
+    },
+    {
+      "path": "./app/(app)/page.tsx",
+      "content": "\"use client\";\nimport { Button } from '@/components/ui/button';\nimport Link from 'next/link';\n\nexport default function Home() {\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-4xl font-bold\">Welcome to the App</h1>\n      <p className=\"mt-4 text-lg\">Please login to access your account.</p>\n      <Link href=\"/login\">\n        <Button className=\"mt-4\">Go to Login</Button>\n      </Link>\n    </div>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./app/(app)/page.tsx"
     }
   ],
   "tailwind": {},
