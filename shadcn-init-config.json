@@ -9,21 +9,17 @@
     "appwrite"
   ],
   "devDependencies": [],
-  "registryDependencies": [
-    "button",
-    "card",
-    "input"
-  ],
+  "registryDependencies": [],
   "files": [
     {
       "path": "./app/(app)/login/page.tsx",
-      "content": "import { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/navigation';\nimport { Button, Input, Card } from '@/components/ui';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n\n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <Input {...register('email')} type=\"email\" placeholder=\"Email\" />\n        <Input {...register('password')} type=\"password\" placeholder=\"Password\" />\n        <Button type=\"submit\">Login</Button>\n      </form>\n    </Card>\n  );\n}\n",
+      "content": "\"use client\";\nimport { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/navigation';\nimport { Button, Input, Card } from '@/components/ui';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n\n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <Input {...register('email')} type=\"email\" placeholder=\"Email\" />\n        <Input {...register('password')} type=\"password\" placeholder=\"Password\" />\n        <Button type=\"submit\">Login</Button>\n      </form>\n    </Card>\n  );\n}\n",
       "type": "registry:example",
       "target": "./app/(app)/login/page.tsx"
     },
     {
       "path": "./app/(app)/account/page.tsx",
-      "content": "import { useRouter } from 'next/navigation';\nimport { useEffect, useState } from 'react';\nimport { account } from '@/lib/appwrite';\nimport { Button, Card } from '@/components/ui';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n      <Button onClick={() => router.push('/app/(app)/login')}>Logout</Button>\n    </Card>\n  );\n}\n",
+      "content": "\"use client\";\nimport { useRouter } from 'next/navigation';\nimport { useEffect, useState } from 'react';\nimport { account } from '@/lib/appwrite';\nimport { Button, Card } from '@/components/ui';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n      <Button onClick={() => router.push('/app/(app)/login')}>Logout</Button>\n    </Card>\n  );\n}\n",
       "type": "registry:example",
       "target": "./app/(app)/account/page.tsx"
     },
@@ -35,9 +31,33 @@
     },
     {
       "path": "./lib/appwrite.ts",
-      "content": "import { Client, Account } from '@appwrite/web';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "content": "import { Client, Account } from 'appwrite';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
       "type": "registry:example",
       "target": "./lib/appwrite.ts"
+    },
+    {
+      "path": "./components/ui/button.tsx",
+      "content": "\"use client\";\nimport { ButtonHTMLAttributes } from 'react';\nimport { cn } from '@/lib/utils';\n\ninterface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}\n\nexport function Button({ className, ...props }: ButtonProps) {\n  return (\n    <button\n      className={cn('px-4 py-2 bg-blue-500 text-white rounded', className)}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./components/ui/button.tsx"
+    },
+    {
+      "path": "./components/ui/input.tsx",
+      "content": "\"use client\";\nimport { InputHTMLAttributes } from 'react';\nimport { cn } from '@/lib/utils';\n\ninterface InputProps extends InputHTMLAttributes<HTMLInputElement> {}\n\nexport function Input({ className, ...props }: InputProps) {\n  return (\n    <input\n      className={cn('border p-2 rounded w-full', className)}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./components/ui/input.tsx"
+    },
+    {
+      "path": "./components/ui/card.tsx",
+      "content": "\"use client\";\nimport { HTMLAttributes } from 'react';\nimport { cn } from '@/lib/utils';\n\ninterface CardProps extends HTMLAttributes<HTMLDivElement> {}\n\nexport function Card({ className, ...props }: CardProps) {\n  return (\n    <div\n      className={cn('shadow-lg rounded-lg p-6 bg-white', className)}\n      {...props}\n    />\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./components/ui/card.tsx"
+    },
+    {
+      "path": "./lib/utils.ts",
+      "content": "import { ClassValue, clsx } from 'clsx';\nimport { twMerge } from 'tailwind-merge';\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(inputs));\n}\n",
+      "type": "registry:example",
+      "target": "./lib/utils.ts"
     }
   ],
   "tailwind": {},
