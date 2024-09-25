@@ -6,7 +6,8 @@
     "tailwindcss",
     "clsx",
     "tailwind-merge",
-    "appwrite"
+    "appwrite",
+    "@types/node"
   ],
   "devDependencies": [],
   "registryDependencies": [
@@ -35,7 +36,7 @@
     },
     {
       "path": "./lib/appwrite.ts",
-      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT) // Use env variable\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID); // Use env variable\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "content": "// appwrite.ts\nimport { Client, Account } from 'appwrite';\n\n// Initialize Appwrite Client\nconst client = new Client();\n\nclient\n  .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT)\n  .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID);\n\n// Initialize Appwrite Account service\nconst account = new Account(client);\n\nexport { client, account };\n",
       "type": "registry:example",
       "target": "./lib/appwrite.ts"
     },
