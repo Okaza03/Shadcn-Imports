@@ -4,7 +4,6 @@
   "dependencies": [
     "react-hook-form",
     "tailwindcss",
-    "next-navigation",
     "clsx",
     "tailwind-merge",
     "appwrite"
