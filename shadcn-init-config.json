@@ -2,24 +2,29 @@
   "name": "next-app-with-login-account-middleware",
   "type": "registry:block",
   "dependencies": [
-    "@appwrite/sdk",
     "react-hook-form",
     "tailwindcss",
-    "next-auth",
-    "next/router"
+    "next/router",
+    "clsx",
+    "tailwind-merge",
+    "appwrite"
   ],
   "devDependencies": [],
-  "registryDependencies": [],
+  "registryDependencies": [
+    "Button",
+    "Card",
+    "Input"
+  ],
   "files": [
     {
       "path": "./app/(app)/login/page.tsx",
-      "content": "import { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/router';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n  \n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <input {...register('email')} type=\"email\" placeholder=\"Email\" className=\"border p-2\" />\n        <input {...register('password')} type=\"password\" placeholder=\"Password\" className=\"border p-2\" />\n        <button type=\"submit\" className=\"bg-blue-500 text-white p-2 rounded\">Login</button>\n      </form>\n    </div>\n  );\n}\n",
+      "content": "import { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/router';\nimport { Button, Input, Card } from '@/components/ui';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n\n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <Input {...register('email')} type=\"email\" placeholder=\"Email\" />\n        <Input {...register('password')} type=\"password\" placeholder=\"Password\" />\n        <Button type=\"submit\">Login</Button>\n      </form>\n    </Card>\n  );\n}\n",
       "type": "registry:example",
       "target": "./app/(app)/login/page.tsx"
     },
     {
       "path": "./app/(app)/account/page.tsx",
-      "content": "import { useRouter } from 'next/router';\nimport { account } from '@/lib/appwrite';\nimport { useEffect, useState } from 'react';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <div className=\"p-8\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n    </div>\n  );\n}\n",
+      "content": "import { useRouter } from 'next/router';\nimport { useEffect, useState } from 'react';\nimport { account } from '@/lib/appwrite';\nimport { Button, Card } from '@/components/ui';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n      <Button onClick={() => router.push('/app/(app)/login')}>Logout</Button>\n    </Card>\n  );\n}\n",
       "type": "registry:example",
       "target": "./app/(app)/account/page.tsx"
     },
@@ -31,7 +36,7 @@
     },
     {
       "path": "./lib/appwrite.ts",
-      "content": "import { Client, Account } from '@appwrite/sdk';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "content": "import { Client, Account } from '@appwrite/web';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
       "type": "registry:example",
       "target": "./lib/appwrite.ts"
     }
