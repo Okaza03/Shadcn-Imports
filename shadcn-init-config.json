@@ -11,9 +11,9 @@
   ],
   "devDependencies": [],
   "registryDependencies": [
-    "Button",
-    "Card",
-    "Input"
+    "button",
+    "card",
+    "input"
   ],
   "files": [
     {
