@@ -1,0 +1,46 @@
+{
+  "name": "next-app-with-login-account-middleware",
+  "type": "registry:block",
+  "dependencies": [
+    "react-hook-form",
+    "tailwindcss",
+    "clsx",
+    "tailwind-merge",
+    "appwrite"
+  ],
+  "devDependencies": [],
+  "registryDependencies": [
+    "button",
+    "card",
+    "input"
+  ],
+  "files": [
+    {
+      "path": "./app/(app)/login/page.tsx",
+      "content": "\"use client\";\nimport { useForm } from 'react-hook-form';\nimport { account } from '@/lib/appwrite';\nimport { useRouter } from 'next/navigation';\nimport { Button } from '@/components/ui/button';\nimport { Input } from '@/components/ui/input';\nimport { Card } from '@/components/ui/card';\n\nexport default function Login() {\n  const { register, handleSubmit } = useForm();\n  const router = useRouter();\n\n  const onSubmit = async (data) => {\n    try {\n      await account.createEmailSession(data.email, data.password);\n      router.push('/app/(app)/account');\n    } catch (err) {\n      console.error(err);\n    }\n  };\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Login</h1>\n      <form onSubmit={handleSubmit(onSubmit)} className=\"flex flex-col gap-4\">\n        <Input {...register('email')} type=\"email\" placeholder=\"Email\" />\n        <Input {...register('password')} type=\"password\" placeholder=\"Password\" />\n        <Button type=\"submit\">Login</Button>\n      </form>\n    </Card>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./app/(app)/login/page.tsx"
+    },
+    {
+      "path": "./app/(app)/account/page.tsx",
+      "content": "\"use client\";\nimport { useRouter } from 'next/navigation';\nimport { useEffect, useState } from 'react';\nimport { account } from '@/lib/appwrite';\nimport { Button } from '@/components/ui/button';\nimport { Card } from '@/components/ui/card';\n\nexport default function Account() {\n  const [user, setUser] = useState(null);\n  const router = useRouter();\n\n  useEffect(() => {\n    const checkAuth = async () => {\n      try {\n        const user = await account.get();\n        setUser(user);\n      } catch (err) {\n        router.push('/app/(app)/login');\n      }\n    };\n    checkAuth();\n  }, []);\n\n  return (\n    <Card className=\"p-8 max-w-md mx-auto\">\n      <h1 className=\"text-2xl font-bold mb-4\">Account Page</h1>\n      {user ? <p>Welcome, {user.email}!</p> : <p>Loading...</p>}\n      <Button onClick={() => router.push('/app/(app)/login')}>Logout</Button>\n    </Card>\n  );\n}\n",
+      "type": "registry:example",
+      "target": "./app/(app)/account/page.tsx"
+    },
+    {
+      "path": "./app/(app)/middleware.ts",
+      "content": "import { NextResponse } from 'next/server';\nimport { account } from '@/lib/appwrite';\n\nexport async function middleware(req) {\n  try {\n    await account.get();\n    return NextResponse.next();\n  } catch (err) {\n    return NextResponse.redirect(new URL('/app/(app)/login', req.url));\n  }\n}\n\nexport const config = {\n  matcher: ['/app/(app)/account/:path*'],\n};\n",
+      "type": "registry:example",
+      "target": "./app/(app)/middleware.ts"
+    },
+    {
+      "path": "./lib/appwrite.ts",
+      "content": "import { Client, Account } from 'appwrite';\n\nconst client = new Client();\nclient.setEndpoint('your-appwrite-endpoint').setProject('your-appwrite-project-id');\n\nconst account = new Account(client);\n\nexport { client, account };\n",
+      "type": "registry:example",
+      "target": "./lib/appwrite.ts"
+    }
+  ],
+  "tailwind": {},
+  "cssVars": {},
+  "meta": {}
+}
